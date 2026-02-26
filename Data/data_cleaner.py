@@ -119,7 +119,7 @@ def nullify_out_of_range(col, low=None, high=None, label=""):
         change_counts[col] = change_counts.get(col, 0) + changed
 
 # Age: must be 18–100
-nullify_out_of_range('Age', low=18, high=100, label="[18, 100]")
+nullify_out_of_range('Age', low=0, high=100, label="[18, 100]")
 
 # Interest Rate: must be > 0 and realistic (≤ 60%)
 nullify_out_of_range('Interest_Rate', low=0.00, high=60, label="(0, 60]")
@@ -163,47 +163,49 @@ if 'Payment_of_Min_Amount' in df.columns:
         change_counts['Payment_of_Min_Amount'] = change_counts.get('Payment_of_Min_Amount', 0) + changed
 
 
-# ── 8. IMPUTATION (per-customer medians for numeric cols) ────────────────────
-log("\n[6] Imputing NaN values with per-customer median (numeric) / mode (categorical)")
+# ── 8. IMPUTATION (median for numeric, "Missing" for categorical) ───────────
+log("\n[6] Imputing NaN values with per-customer median (numeric) and 'Missing' (categorical)")
 
-# Per-customer numeric imputation
+# ── Numeric Imputation ──────────────────────────────────────────────────────
 numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+numeric_cols = [col for col in numeric_cols if col != 'Age']  # explicitly exclude Age
 
 for col in numeric_cols:
     null_count = df[col].isna().sum()
     if null_count == 0:
         continue
+
+    # Per-customer median
     if 'Customer_ID' in df.columns:
         df[col] = df.groupby('Customer_ID')[col].transform(
             lambda x: x.fillna(x.median())
         )
-    remaining = df[col].isna().sum()
+
     # Global median fallback
+    remaining = df[col].isna().sum()
     if remaining > 0:
         df[col] = df[col].fillna(df[col].median())
+
     filled = null_count - df[col].isna().sum()
     if filled > 0:
-        log(f"   {col}: {filled} NaN(s) filled via per-customer median")
+        log(f"   {col}: {filled} NaN(s) filled via median")
 
-# Per-customer categorical imputation
+# ── Categorical Imputation ──────────────────────────────────────────────────
 cat_cols = ['Occupation', 'Credit_Mix', 'Payment_Behaviour', 'Payment_of_Min_Amount']
+
 for col in cat_cols:
     if col not in df.columns:
         continue
+
     null_count = df[col].isna().sum()
     if null_count == 0:
         continue
-    if 'Customer_ID' in df.columns:
-        df[col] = df.groupby('Customer_ID')[col].transform(
-            lambda x: x.fillna(x.mode()[0] if not x.mode().empty else np.nan)
-        )
-    remaining = df[col].isna().sum()
-    if remaining > 0:
-        global_mode = df[col].mode()
-        df[col] = df[col].fillna(global_mode[0] if not global_mode.empty else np.nan)
+
+    df[col] = df[col].fillna("Missing")
+
     filled = null_count - df[col].isna().sum()
     if filled > 0:
-        log(f"   {col}: {filled} NaN(s) filled via per-customer mode")
+        log(f"   {col}: {filled} NaN(s) filled with 'Missing'")
 
 
 # ── FURTHER CHANGES ─────────────────────────────────────────────────────────
@@ -271,10 +273,21 @@ df['Type_of_Loan'] = df['Type_of_Loan'].fillna('Not Specified')
 cols = ['Num_Bank_Accounts', 'Num_Credit_Card', 'Interest_Rate', 'Num_of_Loan']
 
 for c in cols:
-    df[c] = (
+    mode_per_customer = (
         df.groupby('Customer_ID')[c]
-          .transform(lambda x: x.value_counts().idxmax())
+          .agg(lambda x: x.dropna().mode().iloc[0] if not x.dropna().mode().empty else np.nan)
     )
+    df[c] = df['Customer_ID'].map(mode_per_customer)
+    
+
+def edad_corregida(grupo):
+    conteo = grupo['Age'].value_counts()
+    # si hay empate, toma la edad mayor
+    edad_final = conteo[conteo == conteo.max()].index.max()
+    grupo['Age'] = edad_final
+    return grupo
+
+df = df.groupby('Customer_ID', group_keys=False).apply(edad_corregida)
     
 # --- STRAY APOSTROPHES DELETION ---
 def delete_stray_apostrophes(column):
