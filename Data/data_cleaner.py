@@ -311,6 +311,75 @@ cols = [
 
 df[cols] = df[cols].apply(delete_stray_apostrophes)
 
+# --- loan types & payment behaviour handling (onehot encoding) ---
+# - Loan Types -
+loan_strings = df['Type_of_Loan'].dropna()
+
+all_loan_types = []
+
+for loan_string in loan_strings:
+    loan_string = loan_string.replace(' and ', ', ')
+    loans = loan_string.split(',')    
+    loans = [loan.strip() for loan in loans if loan.strip()]
+    all_loan_types.extend(loans)
+
+unique_loan_types = sorted(set(all_loan_types))
+
+for loan_type in unique_loan_types:
+    col_name = f'{loan_type.replace(" ", "_").replace("-", "_")}'
+    
+    # Check if loan type exists in Type_of_Loan string
+    df[col_name] = df['Type_of_Loan'].apply(
+        lambda x: True if pd.notna(x) and loan_type in x else False
+    )
+    
+# Drop the original Type_of_Loan column as it's now encoded into multiple boolean columns
+df.drop(columns=['Type_of_Loan'], inplace=True)
+    
+# - Payment Behaviour -
+behaviour_strings = df['Payment_Behaviour'].dropna()
+
+all_spend_types = []
+all_value_types = []
+
+for behaviour in behaviour_strings:
+    if behaviour == "Missing":
+        continue
+        
+    parts = behaviour.split('_')
+    
+    # Expected format:
+    # ['High', 'spent', 'Medium', 'value', 'payments']
+    
+    if len(parts) >= 4:
+        spend_type = parts[0] + "_spent"
+        value_type = parts[2] + "_value"
+        
+        all_spend_types.append(spend_type)
+        all_value_types.append(value_type)
+        
+unique_spend = sorted(set(all_spend_types))
+unique_value = sorted(set(all_value_types))
+
+for spend in unique_spend:
+    col_name = spend
+    
+    df[col_name] = df['Payment_Behaviour'].apply(
+        lambda x: True if pd.notna(x) and spend in x else False
+    )
+    
+for value in unique_value:
+    col_name = value
+    
+    df[col_name] = df['Payment_Behaviour'].apply(
+        lambda x: True if pd.notna(x) and value in x else False
+    )
+    
+df['Behaviour_Missing'] = df['Payment_Behaviour'] == "Missing"
+
+# Drop the original Payment_Behaviour column as it's now encoded into multiple boolean columns
+df.drop(columns=['Payment_Behaviour'], inplace=True)
+
 # ── 9. DUPLICATE ROWS ─────────────────────────────────────────────────────────
 log("\n[7] Checking for duplicate rows")
 dupes = df.duplicated().sum()
@@ -339,6 +408,14 @@ for col in ['Name', 'SSN', 'Occupation']:
     after = df[col].isna().sum()
     print(f"{col}: {before} blanks filled → {after} remaining")
 
+# ── 12. DUMMIES ─────────────────────────────────────────────────────────────────
+dummy_cols = ['Occupation', 'Credit_Mix', 'Payment_of_Min_Amount']
+
+for col in dummy_cols:
+    if col in df.columns:
+        dummies = pd.get_dummies(df[col], prefix=col, dummy_na=False)
+        df = pd.concat([df, dummies], axis=1)
+        df.drop(columns=[col], inplace=True)
 
 # ── 11. SAVE ─────────────────────────────────────────────────────────────────
 df.to_csv("Data/clean_train.csv", index=False)
