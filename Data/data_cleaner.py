@@ -191,7 +191,7 @@ for col in numeric_cols:
         log(f"   {col}: {filled} NaN(s) filled via median")
 
 # ── Categorical Imputation ──────────────────────────────────────────────────
-cat_cols = ['Occupation', 'Credit_Mix', 'Payment_Behaviour', 'Payment_of_Min_Amount']
+cat_cols = ['Credit_Mix', 'Payment_Behaviour', 'Payment_of_Min_Amount']
 
 for col in cat_cols:
     if col not in df.columns:
@@ -333,7 +333,7 @@ for col, cnt in sorted(change_counts.items(), key=lambda x: -x[1]):
     log(f"   {col:40s} {cnt:>6} cell(s) changed")
 log(f"{'='*60}\n")
 
-for col in ['Name', 'SSN']:
+for col in ['Name', 'SSN', 'Occupation']:
     before = df[col].isna().sum()
     df[col] = df.groupby('Customer_ID')[col].transform(lambda x: x.ffill().bfill())
     after = df[col].isna().sum()
