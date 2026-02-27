@@ -83,7 +83,7 @@ def xgboost(df: pd.DataFrame)-> tuple[float, float, str, XGBClassifier]:
         subsample=0.6,
         colsample_bytree=0.8,
         early_stopping_rounds=40,
-        random_state=42
+        random_state=42,
         tree_method='hist'
     )
 
