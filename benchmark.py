@@ -1,17 +1,17 @@
 import pandas as pd
 import numpy as np
-from xgboost import XGBClassifier, plot_importance
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
 
+
 def benchmark(df: pd.DataFrame) -> tuple[float, float, str]:
     """
     Benchmark the performance of a logistic regression model on the given DataFrame.
-    
+
     Parameters:
         df (pd.DataFrame): The input DataFrame containing the data for training and testing.
-        
+
     Returns:
         tuple[float, float, str]: A tuple containing the accuracy, AUC score, and classification report.
     """
