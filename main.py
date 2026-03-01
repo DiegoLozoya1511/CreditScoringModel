@@ -19,6 +19,7 @@ def main():
     # === Feature Selection ===
     X_train, X_test, y_train, y_test = data_splitter(df, target='Credit_Score')
     print(X_train.columns, len(X_train.columns))
+    print(X_train.info())
 
 
 if __name__ == "__main__":
