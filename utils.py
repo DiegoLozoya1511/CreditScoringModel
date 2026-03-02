@@ -64,10 +64,10 @@ def data_splitter(df: pd.DataFrame, target: str) -> tuple[pd.DataFrame, pd.DataF
     X = X.drop(
         columns=[col for col in X.columns if col not in important_features])
 
-    # Negate features for coherent score direction (higher score = better customer).
+    '''# Negate features for coherent score direction (higher score = better customer).
     negative_features = ['Interest_Rate', 'Outstanding_Debt', 'Delay_from_due_date', 'Num_of_Delayed_Payment',
                          'Payment_of_Min_Amount_Yes', 'Credit_Mix_Good']
-    X[negative_features] = X[negative_features] * -1
+    X[negative_features] = X[negative_features] * -1'''
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y

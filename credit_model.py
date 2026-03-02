@@ -15,7 +15,7 @@ def get_weights(model, features: list) -> pd.DataFrame:
     """
     weights = pd.DataFrame({
         'feature'    : features,
-        'coefficient': model.coef_[0]  # class 2 = Good
+        'coefficient': model.coef_[2]  # class 2 = Good
     }).sort_values('coefficient', ascending=False).reset_index(drop=True)
 
     return weights
