@@ -53,7 +53,7 @@ def scale_scores(scores: pd.Series, min_value: float) -> pd.Series:
         scaled (pd.Series): Integer scores constrained between score_min and score_max.
     """
     score_min = 0
-    score_max = 1000
+    score_max = 600
     
     shifted = (scores + abs(min_value)) * 100
 

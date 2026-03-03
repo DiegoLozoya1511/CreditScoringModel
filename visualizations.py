@@ -37,7 +37,7 @@ def plot_score_distribution(df: pd.DataFrame, set: str):
     plt.ylabel("Density")
     plt.show()
     
-    """plt.figure()
+    plt.figure()
     color_idx = [1, 5, 9]
     labels    = {0: 'Poor', 1: 'Standard', 2: 'Good'}
 
@@ -55,4 +55,4 @@ def plot_score_distribution(df: pd.DataFrame, set: str):
     plt.xlabel("Score")
     plt.ylabel("Density")
     plt.legend()
-    plt.show()"""
+    plt.show()
