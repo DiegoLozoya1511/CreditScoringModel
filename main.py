@@ -55,9 +55,9 @@ def main():
     plot_score_distribution(test_scores, 'Test')
     
     # --- Treshold Analysis ---
-    t1 = 245
+    t1 = 220
     
-    t2 = 385
+    t2 = 410
         
     train_scores['class'] = train_scores['Score'].apply(lambda x: 0 if x <= t1 else 1 if x < t2 else 2)
     test_scores['class']= test_scores['Score'].apply(lambda x: 0 if x <= t1 else 1 if x < t2 else 2)

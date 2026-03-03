@@ -55,8 +55,8 @@ def data_splitter(df: pd.DataFrame, target: str) -> tuple[pd.DataFrame, pd.DataF
 
     # Important features (exploration on features_selection.ipynb)
     important_features = ['Outstanding_Debt', 'Interest_Rate', 'Delay_from_due_date', 'Num_Credit_Card',
-                          'Num_of_Delayed_Payment', 'Credit_Mix_Standard', 'Changed_Credit_Limit',
-                          'Credit_Mix_Good', 'Payment_of_Min_Amount_Yes']
+                         'Credit_Mix_Standard', 'Changed_Credit_Limit',
+                          'Credit_Mix_Good', 'Payment_of_Min_Amount_Yes', 'High_spent']
 
     # droping non-informative and target columns
     X = df.drop(columns=["Customer_ID", "ID", "Name", "SSN", "Month", target])
@@ -65,7 +65,7 @@ def data_splitter(df: pd.DataFrame, target: str) -> tuple[pd.DataFrame, pd.DataF
         columns=[col for col in X.columns if col not in important_features])
 
     # Negate features for coherent score direction (higher score = better customer).
-    negative_features = ['Interest_Rate', 'Outstanding_Debt', 'Delay_from_due_date', 'Num_of_Delayed_Payment',
+    negative_features = ['Interest_Rate', 'Outstanding_Debt', 'Delay_from_due_date',
                          'Payment_of_Min_Amount_Yes', 'Credit_Mix_Standard', 'Num_Credit_Card', 'Changed_Credit_Limit']
     X[negative_features] = X[negative_features] * -1
 
