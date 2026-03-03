@@ -27,8 +27,7 @@ def main():
     
     # === WoE Encoded Data ===
     features = X_train.columns.tolist()
-    X_train_woe = pd.read_csv('Data/X_train_woe.csv')
-    X_test_woe = pd.read_csv('Data/X_test_woe.csv')
+   
     
     # === Credit Model ===
     
@@ -56,16 +55,12 @@ def main():
     plot_score_distribution(test_scores, 'Test')
     
     # --- Treshold Analysis ---
-    t1 = 300
+    t1 = 245
     
-    t2 = 400
-    
-    print(train_scores)
-    print(len(train_scores))
-    print(train_scores['Score'].isna().any())
-    
+    t2 = 385
+        
     train_scores['class'] = train_scores['Score'].apply(lambda x: 0 if x <= t1 else 1 if x < t2 else 2)
-    test_scores['class']= train_scores['Score'].apply(lambda x: 0 if x <= t1 else 1 if x < t2 else 2)
+    test_scores['class']= test_scores['Score'].apply(lambda x: 0 if x <= t1 else 1 if x < t2 else 2)
     
     train_acc = accuracy_score(train_scores['Credit_Score'], train_scores['class'])
     test_acc = accuracy_score(test_scores['Credit_Score'], test_scores['class'])
