@@ -11,12 +11,12 @@ def main():
     df = pd.read_csv("Data/clean_train.csv")
 
     # === Get Benchmark ===
+    print("\n=== Benchmark Evaluation ===")
     model = joblib.load('Models/benchmark_model.pkl')
     acc, class_report = get_benchmark(model, df)
 
     print(f"\nAccuracy: {acc:.4f}")
-    print("\nClassification Report:")
-    print(class_report)
+    print(f"\nClassification Report:\n{class_report}")
 
     # === Feature Selection ===
     X_train, X_test, y_train, y_test = data_splitter(df, target='Credit_Score')
@@ -25,6 +25,7 @@ def main():
     features = X_train.columns.tolist()
 
     # === Credit Model ===
+    print("\n=== Credit Model Evaluation ===")
 
     # --- Get feature weights from the model fitted ---
     model = joblib.load('Models/weights_model.pkl')
@@ -46,8 +47,11 @@ def main():
     plot_score_comparison(train_scores, 'Train')
     plot_score_comparison(test_scores, 'Test')
 
-    plot_confusion_matrix(train_scores, 'Train')
-    plot_confusion_matrix(test_scores, 'Test')
+    train_class_report = plot_confusion_matrix(train_scores, 'Train')
+    test_class_report = plot_confusion_matrix(test_scores, 'Test')
+
+    print(f"\nTrain Classification Report:\n{train_class_report}")
+    print(f"\nTest Classification Report:\n{test_class_report}")
 
 
 if __name__ == "__main__":

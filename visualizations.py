@@ -2,7 +2,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import pandas as pd
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 from sklearn.metrics import ConfusionMatrixDisplay
 
 plt.rcParams['figure.figsize'] = (12, 5)
@@ -134,15 +134,20 @@ def plot_score_comparison(scores: pd.DataFrame, set: str):
     plt.show()
 
 
-def plot_confusion_matrix(scores: pd.DataFrame, set: str):
+def plot_confusion_matrix(scores: pd.DataFrame, set: str) -> str:
     """
     Plot the confusion matrix for the given true and predicted labels.
 
     Parameters:
         scores (pd.DataFrame): DataFrame containing 'Credit_Score' (true labels) and 'Class' (predicted labels).
         set (str): Name of the dataset (e.g., 'Train' or 'Test') for the plot title.
+
+    Returns:
+        class_report (str): The classification report as a string.
     """
     acc = accuracy_score(scores['Credit_Score'], scores['Class'])
+    class_report = classification_report(
+        scores['Credit_Score'], scores['Class'], target_names=['Poor', 'Standard', 'Good'])
 
     fig, ax = plt.subplots()
 
@@ -159,3 +164,5 @@ def plot_confusion_matrix(scores: pd.DataFrame, set: str):
     ax.grid(False)
 
     plt.show()
+
+    return class_report

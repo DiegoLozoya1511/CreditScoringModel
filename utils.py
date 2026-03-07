@@ -34,7 +34,8 @@ def get_benchmark(model, df: pd.DataFrame) -> tuple[float, float, str]:
     y_pred = model.predict(X_test)
 
     acc = accuracy_score(y_test, y_pred)
-    class_report = classification_report(y_test, y_pred)
+    class_report = classification_report(y_test, y_pred, target_names=[
+                                         'Poor', 'Standard', 'Good'])
 
     return acc, class_report
 
