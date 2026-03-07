@@ -4,6 +4,16 @@ from sklearn.metrics import accuracy_score, classification_report
 
 
 def get_benchmark(model, df: pd.DataFrame) -> tuple[float, float, str]:
+    """
+    Evaluates the benchmark model on the provided DataFrame.
+
+    Parameters:
+        model: The pre-trained benchmark model to evaluate.
+        df (pd.DataFrame): The DataFrame containing the data for evaluation.
+
+    Returns:
+        tuple: A tuple containing the accuracy and classification report of the model.
+    """
     df = df.copy()
 
     df['Credit_Score'] = df['Credit_Score'].map({
@@ -31,11 +41,11 @@ def get_benchmark(model, df: pd.DataFrame) -> tuple[float, float, str]:
 
 def data_splitter(df: pd.DataFrame, target: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """
-    Splits the DataFrame into training and testing sets.
+    Selects and negates features for model, splits the DataFrame into training and testing sets.
 
     Parameters:
         df (pd.DataFrame): The input DataFrame containing the data for training and testing.
-        target_col (str): The name of the target column in the DataFrame.
+        target (str): The name of the target column in the DataFrame.
 
     Returns:
         tuple: A tuple containing the training features, testing features, training labels, and testing labels.
@@ -65,7 +75,7 @@ def data_splitter(df: pd.DataFrame, target: str) -> tuple[pd.DataFrame, pd.DataF
     # Negate features for coherent score direction (higher score = better customer).
     negative_features = ['Interest_Rate', 'Outstanding_Debt', 'Delay_from_due_date',
                          'Payment_of_Min_Amount_Yes', 'Credit_Mix_Standard',
-                         'Num_Credit_Card', 'Changed_Credit_Limit']
+                         'Num_Credit_Card']
     X[negative_features] = X[negative_features] * -1
 
     X_train, X_test, y_train, y_test = train_test_split(

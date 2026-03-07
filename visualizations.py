@@ -37,6 +37,8 @@ def plot_score_distribution(df: pd.DataFrame, tresholds: list, set: str):
 
     Parameters:
         df (pd.DataFrame): DataFrame containing the 'Score' column with credit scores.
+        tresholds (list): List of treshold values used for classifying credit scores.
+        set (str): Name of the dataset (e.g., 'Train' or 'Test') for the plot title.
     """
     plt.figure()
     sns.kdeplot(df['Score'], color=blue_colors[-1],
@@ -51,9 +53,9 @@ def plot_score_distribution(df: pd.DataFrame, tresholds: list, set: str):
     labels = {0: 'Poor', 1: 'Standard', 2: 'Good'}
 
     # Plot Tresholds
-    plt.axvline(x=tresholds[0], color='lightgray', linestyle='--',
+    plt.axvline(x=tresholds[0], color='dimgray', linestyle='--',
                 alpha=1.0, label='Poor/Standard Tresholds')
-    plt.axvline(x=tresholds[1], color='dimgray', linestyle='--',
+    plt.axvline(x=tresholds[1], color='black', linestyle='--',
                 alpha=0.7, label='Standard/Good Tresholds')
 
     for class_idx in range(3):

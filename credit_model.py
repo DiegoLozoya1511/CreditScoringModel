@@ -21,21 +21,21 @@ def get_weights(model, features: list) -> pd.DataFrame:
     return weights
 
 
-def get_scores(weights: pd.DataFrame, X_train_woe: pd.DataFrame) -> pd.Series:
+def get_scores(weights: pd.DataFrame, X_train: pd.DataFrame) -> pd.Series:
     """
     Calculate credit scores based on feature weights and input features.
 
     Parameters:
         weights (pd.DataFrame): DataFrame containing features and their coefficients.
-        features (pd.DataFrame): DataFrame containing the feature values for each customer.
+        X_train (pd.DataFrame): DataFrame containing the feature values for each customer.
 
     Returns:
         pd.Series: Series containing the calculated credit score for each customer.
     """
     weights = weights.set_index('feature')
     # Ensure feature order matches weights
-    X_train_woe = X_train_woe[weights.T.columns]
-    scores = X_train_woe.dot(weights['coefficient'])
+    X_train = X_train[weights.T.columns]
+    scores = X_train.dot(weights['coefficient'])
     return scores
 
 
@@ -44,7 +44,7 @@ def scale_scores(scores: pd.Series, min_value: float) -> pd.Series:
     Scale raw logistic regression scores to a fixed integer range.
 
     Shifts scores to be non-negative, scales by 100, then clips
-    and normalizes between 0 - 1000.
+    and normalizes between 0 - 600.
 
     Parameters:
         scores    (pd.Series) : Raw scores from the logistic regression.
@@ -88,7 +88,7 @@ def scores_df(weights: pd.DataFrame, X_train: pd.DataFrame, y_train: pd.Series, 
     }).reset_index(drop=True)
 
     # - Test -
-    scores = get_scores(weights, X_test)  # X_test_woe
+    scores = get_scores(weights, X_test)
     test_scores = pd.DataFrame({
         'Credit_Score': y_test,
         'Score': scale_scores(scores, min_value)

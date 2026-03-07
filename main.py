@@ -26,7 +26,7 @@ def main():
 
     # === Credit Model ===
 
-    # --- Get feature weights from the model fitted on WoE-encoded data ---
+    # --- Get feature weights from the model fitted ---
     model = joblib.load('Models/weights_model.pkl')
     weights = get_weights(model, features)
     print(f"\nFeature Weights (sorted by importance):\n{weights}\n")
