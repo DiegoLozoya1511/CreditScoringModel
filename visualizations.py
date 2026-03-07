@@ -123,7 +123,6 @@ def plot_score_comparison(scores: pd.DataFrame, set: str):
 
         axes[i].set_title(f"{class_labels[i]}")
         axes[i].set_xlabel("Score")
-        axes[i].grid(False)
 
         axes[i].legend()
 

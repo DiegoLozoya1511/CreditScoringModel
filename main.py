@@ -16,7 +16,7 @@ def main():
     acc, class_report = get_benchmark(model, df)
 
     print(f"\nAccuracy: {acc:.4f}")
-    print(f"\nClassification Report:\n{class_report}")
+    print(f"\nBenchmark Classification Report:\n{class_report}")
 
     # === Feature Selection ===
     X_train, X_test, y_train, y_test = data_splitter(df, target='Credit_Score')
