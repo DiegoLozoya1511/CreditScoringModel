@@ -42,12 +42,14 @@ if 'page' not in st.session_state:
 if 'user_inputs' not in st.session_state:
     st.session_state.user_inputs = {}
 
+
 def calcular_score_final(suma_ponderada):
 
     primer_calculo = (suma_ponderada + 4.26) * 100
     score_final = np.floor((primer_calculo / 538.79) * 600)
 
     return primer_calculo, score_final
+
 
 def crear_semaforo_simple(score):
 
@@ -61,23 +63,23 @@ def crear_semaforo_simple(score):
 
         gauge={
             "axis": {
-                "range": [0,600],
+                "range": [0, 600],
                 "tickmode": "array",
-                "tickvals": [0,220,410,600],
-                "ticktext": ["0","220","410","600"]
+                "tickvals": [0, 220, 410, 600],
+                "ticktext": ["0", "220", "410", "600"]
             },
 
-            "bar": {"color": "black","thickness":0.25},
+            "bar": {"color": "black", "thickness": 0.25},
 
             "steps": [
-                {"range":[0,220], "color":"#e74c3c"},
-                {"range":[220,410], "color":"#f1c40f"},
-                {"range":[410,600], "color":"#27ae60"}
+                {"range": [0, 220], "color": "#e74c3c"},
+                {"range": [220, 410], "color": "#f1c40f"},
+                {"range": [410, 600], "color": "#27ae60"}
             ],
 
             "threshold": {
-                "line": {"color":"black","width":6},
-                "thickness":0.8,
+                "line": {"color": "black", "width": 6},
+                "thickness": 0.8,
                 "value": score
             }
         }
@@ -85,15 +87,16 @@ def crear_semaforo_simple(score):
 
     fig.update_layout(
         height=350,
-        margin=dict(l=40,r=40,t=40,b=40),
+        margin=dict(l=40, r=40, t=40, b=40),
         paper_bgcolor="rgba(0,0,0,0)"
     )
 
     return fig
 
+
 def pagina_inicio():
     """Página de inicio del modelo ADA"""
-    
+
     st.markdown("""
         <style>
         .title-container {
@@ -145,7 +148,7 @@ def pagina_inicio():
         }
         </style>
     """, unsafe_allow_html=True)
-    
+
     st.markdown("""
     <div class="title-container">
         <h1 class="main-title">MODELO ADA</h1>
@@ -157,9 +160,10 @@ def pagina_inicio():
         st.session_state.page = 'formulario'
         st.rerun()
 
+
 def pagina_formulario():
     """Página del formulario de entrada de datos"""
-    
+
     st.markdown("""
         <style>
         .form-header {
@@ -217,13 +221,13 @@ def pagina_formulario():
         }
         </style>
     """, unsafe_allow_html=True)
-    
+
     col1, col2, col3 = st.columns([1, 2, 1])
     with col1:
         if st.button("← VOLVER", key="back"):
             st.session_state.page = 'inicio'
             st.rerun()
-    
+
     with col2:
         st.markdown("""
             <div class="form-header">
@@ -231,20 +235,22 @@ def pagina_formulario():
                 <p>Complete todos los campos con la información requerida</p>
             </div>
         """, unsafe_allow_html=True)
-    
+
     st.markdown("""
         <div class="info-box">
             ℹ️ Todos los campos aceptan valores positivos y negativos
         </div>
     """, unsafe_allow_html=True)
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
         with st.container():
-            st.markdown('<div class="variable-section">', unsafe_allow_html=True)
-            st.markdown('<p class="section-title">📈 VARIABLES FINANCIERAS</p>', unsafe_allow_html=True)
-            
+            st.markdown('<div class="variable-section">',
+                        unsafe_allow_html=True)
+            st.markdown(
+                '<p class="section-title">📈 VARIABLES FINANCIERAS</p>', unsafe_allow_html=True)
+
             outstanding_debt = st.number_input(
                 "💰 Deuda Pendiente",
                 value=0.0,
@@ -252,7 +258,7 @@ def pagina_formulario():
                 format="%.2f",
                 key="debt"
             )
-            
+
             interest_rate = st.number_input(
                 "📊 Tasa de Interés (%)",
                 value=0.0,
@@ -260,21 +266,21 @@ def pagina_formulario():
                 format="%.2f",
                 key="rate"
             )
-            
+
             delay_days = st.number_input(
                 "⏰ Días de Retraso",
                 value=0,
                 step=1,
                 key="delay"
             )
-            
+
             num_cards = st.number_input(
                 "💳 Número de Tarjetas",
                 value=0,
                 step=1,
                 key="cards"
             )
-            
+
             high_spent = st.number_input(
                 "💸 Gasto Alto",
                 value=0.0,
@@ -283,12 +289,14 @@ def pagina_formulario():
                 key="spent"
             )
             st.markdown('</div>', unsafe_allow_html=True)
-    
+
     with col2:
         with st.container():
-            st.markdown('<div class="variable-section">', unsafe_allow_html=True)
-            st.markdown('<p class="section-title">📋 VARIABLES DE COMPORTAMIENTO</p>', unsafe_allow_html=True)
-            
+            st.markdown('<div class="variable-section">',
+                        unsafe_allow_html=True)
+            st.markdown(
+                '<p class="section-title">📋 VARIABLES DE COMPORTAMIENTO</p>', unsafe_allow_html=True)
+
             credit_mix_std = st.number_input(
                 "🔄 Mix Crédito Estándar",
                 value=0.0,
@@ -296,7 +304,7 @@ def pagina_formulario():
                 format="%.2f",
                 key="mix_std"
             )
-            
+
             changed_limit = st.number_input(
                 "📈 Cambio en Límite",
                 value=0.0,
@@ -304,7 +312,7 @@ def pagina_formulario():
                 format="%.2f",
                 key="limit_change"
             )
-            
+
             credit_mix_good = st.number_input(
                 "✨ Mix Crédito Bueno",
                 value=0.0,
@@ -312,7 +320,7 @@ def pagina_formulario():
                 format="%.2f",
                 key="mix_good"
             )
-            
+
             payment_min = st.number_input(
                 "💵 Pago Mínimo",
                 value=0.0,
@@ -321,7 +329,7 @@ def pagina_formulario():
                 key="payment"
             )
             st.markdown('</div>', unsafe_allow_html=True)
-    
+
     if st.button("📊 CALCULAR SCORE", key="calculate"):
         st.session_state.user_inputs = {
             'Outstanding_Debt': outstanding_debt,
@@ -337,9 +345,10 @@ def pagina_formulario():
         st.session_state.page = 'resultado'
         st.rerun()
 
+
 def pagina_resultado():
     """Página de resultados con semáforo simple"""
-    
+
     st.markdown("""
         <style>
         .result-header {
@@ -396,16 +405,16 @@ def pagina_resultado():
         }
         </style>
     """, unsafe_allow_html=True)
-    
+
     # Calcular la suma ponderada
     suma_ponderada = 0
     for var_name, valor in st.session_state.user_inputs.items():
         if var_name in PESOS:
             suma_ponderada += valor * PESOS[var_name]
-    
+
     # Calcular scores
     primer_calculo, score_final = calcular_score_final(suma_ponderada)
-    
+
     # Determinar color y texto según el score
     if score_final < 220:
         color_score = "#FF4B4B"
@@ -419,14 +428,14 @@ def pagina_resultado():
         color_score = "#4CAF50"
         nivel_riesgo = "BAJO"
         emoji = "🟢"
-    
+
     # Header
     col1, col2, col3 = st.columns([1, 2, 1])
     with col1:
         if st.button("← NUEVA EVALUACIÓN", key="new"):
             st.session_state.page = 'formulario'
             st.rerun()
-    
+
     with col2:
         st.markdown("""
             <div class="result-header">
@@ -434,7 +443,7 @@ def pagina_resultado():
                 <p>Evaluación crediticia completada</p>
             </div>
         """, unsafe_allow_html=True)
-    
+
     # Score y nivel de riesgo ARRIBA
     st.markdown(f"""
     <div style="text-align: center; margin: 0.1rem 0;">
@@ -451,10 +460,10 @@ def pagina_resultado():
     fig = crear_semaforo_simple(score_final)
     st.plotly_chart(fig, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
-    
+
     # Cálculos en columnas
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
         st.markdown(f"""
             <div class="calc-box">
@@ -462,7 +471,7 @@ def pagina_resultado():
                 <div class="calc-value">{suma_ponderada:.4f}</div>
             </div>
         """, unsafe_allow_html=True)
-    
+
     with col2:
         st.markdown(f"""
             <div class="calc-box">
@@ -471,7 +480,7 @@ def pagina_resultado():
                 <div style="font-size:0.9rem; color:#666;">({suma_ponderada:.4f} + 4.26) × 100</div>
             </div>
         """, unsafe_allow_html=True)
-    
+
     with col3:
         st.markdown(f"""
             <div class="calc-box">
@@ -480,10 +489,10 @@ def pagina_resultado():
                 <div style="font-size:0.9rem; color:#666;">⌊({primer_calculo:.2f}/538.79)×600⌋</div>
             </div>
         """, unsafe_allow_html=True)
-    
+
     # Decisión crediticia
     st.markdown("### 📋 DECISIÓN CREDITICIA")
-    
+
     if score_final < 220:
         st.error(f"""
             ### 🔴 RIESGO ALTO
@@ -508,6 +517,7 @@ def pagina_resultado():
             - **Motivo:** Excelente perfil crediticio
             - **Recomendación:** Aprobación automática
         """)
+
 
 # Control de navegación
 if st.session_state.page == 'inicio':
